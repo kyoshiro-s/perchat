@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'chat',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -135,3 +136,5 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+ASGI_APPLICATION = 'perchat_collection.routing.application'
