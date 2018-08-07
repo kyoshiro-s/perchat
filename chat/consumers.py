@@ -68,6 +68,6 @@ class AsyncChatConsumer(AsyncWebsocketConsumer):
     if event['sender_id'] == self.channel_name:
       sender_name = 'あなた'
     else:
-      sender_name = '　相手'
+      sender_name = 'あいて'
 
     await self.send(text_data=json.dumps({'message':message, 'sender_name':sender_name}))
