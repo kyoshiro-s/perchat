@@ -7,7 +7,7 @@
 <body>
   <div align="center">
     <div style="float:left">
-      hogehogehoge
+      ここにpersonaのテーブルを入れる
     </div>
     <div style="float:right">
       <textarea id="chat-log" cols="80" rows="40" readonly></textarea><br>
@@ -17,11 +17,19 @@
   </div>
 </body>
 <script>
-  var room_name = {{ room_name_json }};
+  var room_name = "{{ room_name }}";
+  var turn = "{{ turn }}";
   var chatSocket = new WebSocket(
     'ws://' + window.location.host +
     '/ws/chat/' + room_name + '/');
   document.querySelector('#chat-message-input').focus();
+  if (turn === 'S') {
+    document.querySelector('#chat-message-input').value = 'あいての発言を待っています…';
+    document.querySelector('#chat-message-input').disabled = true;
+    document.querySelector('#chat-message-submit').disabled = true;
+  } else {
+    document.querySelector('#chat-log').value += '【システムメッセージ】 あなたから発言してください。\n';
+  }
 
   chatSocket.onmessage = function(e) {
     var data = JSON.parse(e.data);
