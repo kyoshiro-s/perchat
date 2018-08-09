@@ -5,21 +5,37 @@
   <title>Chat Rooms</title>
 </head>
 <body>
-  What chat room would you like to enter?<br>
-  <input id="room-name-input" type="text" size="100"><br>
-  <input id="room-name-submit" type="button" value="Enter">
-
+  <div align="center">
+    random_persona_table<br>
+    <input type="button" id="matching-start-input" value="決定"><br>
+    <div id="announce-message"></div>
+  </div>
   <script>
-    document.querySelector('#room-name-input').focus();
-    document.querySelector('#room-name-input').onkeyup = function(e) {
-      if (e.keyCode === 13) {//enter, return
-        document.querySelector('#room-name-submit').click();
-      }
+    room_name = "{{room_name}}"
+    var matchingSocket = new WebSocket(
+      'ws://' + window.location.host + '/ws/matching/' + room_name + '/'
+    );
+
+    matchingSocket.onclose = function(e) {
+      console.error('Matching socket closed unexpectedly');
     };
 
-    document.querySelector('#room-name-submit').onclick = function(e) {
-      var roomName = document.querySelector('#room-name-input').value;
-      window.location.pathname = '/chat/' + roomName + '/';
+    document.querySelector('#matching-start-input').onclick = function(e) {
+      matchingSocket.send(JSON.stringify({
+        'room_name': room_name,
+      }));
+      document.querySelector('#announce-message').innerHTML = 'マッチング中です… [' + room_name + ']';
+    };
+
+    matchingSocket.onmessage = function (e) {
+      var matching_data = JSON.parse(e.data);
+      var room_name = matching_data['room_name'];
+      if (matching_data['is_first']) {
+        var turn = 'F';
+      } else {
+        var turn = 'S';
+      }
+      window.location.pathname = '/chat/' + room_name + '/' + turn + '/';
     };
   </script>
 </body>
