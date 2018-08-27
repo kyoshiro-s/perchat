@@ -6,7 +6,16 @@
 </head>
 <body>
   <div align="center">
-    random_persona_table<br>
+    あなたの設定は以下の通りです。<br>
+    <table border="1" cellpadding="5">
+      <tr><th>属性</th><th>値</th></tr>
+      {% for k,v in persona.items %}
+      <tr><td>{{k}}</td><td>{{v}}</td></tr>
+      {% endfor %}
+    </table><br>
+    この設定でよろしければ「決定」を、<br>
+    そうでない場合は「再生成」を押してください。<br>
+    <input type="button" id="regenerate" value="再生成">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="button" id="matching-start-input" value="決定"><br>
     <div id="announce-message"></div>
   </div>
@@ -21,11 +30,17 @@
     };
 
     document.querySelector('#matching-start-input').onclick = function(e) {
+      this.disabled = true;
+      document.querySelector('#regenerate').disabled = true;
       matchingSocket.send(JSON.stringify({
         'room_name': room_name,
       }));
       document.querySelector('#announce-message').innerHTML = 'マッチング中です… [' + room_name + ']';
     };
+
+    document.querySelector('#regenerate').onclick = function(e) {
+      location.reload();
+    }
 
     matchingSocket.onmessage = function (e) {
       var matching_data = JSON.parse(e.data);
