@@ -75,9 +75,15 @@ class AsyncChatConsumer(AsyncWebsocketConsumer):
 
 from collections import defaultdict
 num_room_members = defaultdict(lambda:0)
+matching_queue = []
 class AsyncMatchingConsumer(AsyncWebsocketConsumer):
   async def connect(self):
-    self.room_name = self.scope['url_route']['kwargs']['room_name']
+    self.user_id = self.scope['url_route']['kwargs']['user_id']
+    if len(matching_queue) == 0:
+      self.room_name = self.user_id
+      matching_queue.append(self.user_id)
+    else:
+      self.room_name = matching_queue.pop()
     self.matching_group_name = 'matching_{}'.format(self.room_name)
     self.is_first = False
 
@@ -86,13 +92,6 @@ class AsyncMatchingConsumer(AsyncWebsocketConsumer):
 
     await self.accept()
 
-  async def disconnect(self, close_code):
-    await self.channel_layer.group_discard(self.matching_group_name, self.channel_name)
-    num_room_members[self.matching_group_name] -= 1
-
-  async def receive(self, text_data):
-    data_json = json.loads(text_data)
-    room_name = data_json['room_name']
     if num_room_members[self.matching_group_name] > 0:
       del num_room_members[self.matching_group_name]
       self.is_first = True
@@ -105,6 +104,14 @@ class AsyncMatchingConsumer(AsyncWebsocketConsumer):
       )
     else:
       num_room_members[self.matching_group_name] += 1
+
+
+  async def disconnect(self, close_code):
+    await self.channel_layer.group_discard(self.matching_group_name, self.channel_name)
+    num_room_members[self.matching_group_name] -= 1
+
+  async def receive(self, text_data):
+    pass
 
   async def matched(self, data):
     room_name = data['room_name']

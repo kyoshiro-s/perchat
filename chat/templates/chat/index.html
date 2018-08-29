@@ -2,7 +2,17 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Chat Rooms</title>
+  <title>控え室</title>
+  <script>
+    var uuid4 = (function() {
+      var d = +new Date();
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+        .replace(/[xy]/g, function(c) {
+          var r = (d + Math.random() * 16) % 16 | 0;
+          return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+    });
+  </script>
 </head>
 <body>
   <div align="center">
@@ -20,38 +30,36 @@
     <div id="announce-message"></div>
   </div>
   <script>
-    room_name = "{{room_name}}"
-    var matchingSocket = new WebSocket(
-      'ws://' + window.location.host + '/ws/matching/' + room_name + '/'
-    );
-
-    matchingSocket.onclose = function(e) {
-      console.error('Matching socket closed unexpectedly');
-    };
-
     document.querySelector('#matching-start-input').onclick = function(e) {
       this.disabled = true;
       document.querySelector('#regenerate').disabled = true;
-      matchingSocket.send(JSON.stringify({
-        'room_name': room_name,
-      }));
-      document.querySelector('#announce-message').innerHTML = 'マッチング中です… [' + room_name + ']';
+
+      user_id = uuid4()
+      var matchingSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/matching/' + user_id + '/'
+      );
+
+      matchingSocket.onclose = function(e) {
+        console.error('Matching socket closed unexpectedly');
+      };
+
+      matchingSocket.onmessage = function (e) {
+        var matching_data = JSON.parse(e.data);
+        var room_name = matching_data['room_name'];
+        if (matching_data['is_first']) {
+          var turn = 'F';
+        } else {
+          var turn = 'S';
+        }
+        window.location.pathname = '/chat/' + room_name + '/' + turn + '/';
+      };
+
+      document.querySelector('#announce-message').innerHTML = 'マッチング中です… [' + user_id + ']';
     };
 
     document.querySelector('#regenerate').onclick = function(e) {
       location.reload();
     }
-
-    matchingSocket.onmessage = function (e) {
-      var matching_data = JSON.parse(e.data);
-      var room_name = matching_data['room_name'];
-      if (matching_data['is_first']) {
-        var turn = 'F';
-      } else {
-        var turn = 'S';
-      }
-      window.location.pathname = '/chat/' + room_name + '/' + turn + '/';
-    };
   </script>
 </body>
 </html>
