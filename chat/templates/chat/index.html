@@ -23,6 +23,12 @@
       <tr><td>{{k}}</td><td>{{v}}</td></tr>
       {% endfor %}
     </table><br>
+    <form name="persona_form" method="POST">
+      {% csrf_token %}
+      {% for k,v in persona.items %}
+        <input type="hidden" name="persona" value="{{k}}:{{v}}">
+      {% endfor %}
+    </form>
     この設定でよろしければ「決定」を、<br>
     そうでない場合は「再生成」を押してください。<br>
     <input type="button" id="regenerate" value="再生成">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -51,7 +57,8 @@
         } else {
           var turn = 'S';
         }
-        window.location.pathname = '/chat/' + room_name + '/' + turn + '/';
+        document.persona_form.action = '/chat/' + room_name + '/' + turn + '/';
+        document.persona_form.submit();
       };
 
       document.querySelector('#announce-message').innerHTML = 'マッチング中です… [' + user_id + ']';

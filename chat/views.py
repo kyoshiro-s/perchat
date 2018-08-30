@@ -12,7 +12,19 @@ def index(request):
   return render(request, 'chat/index.html', {'persona': persona})
 
 def room(request, room_name, turn):
-  print(request.POST)
-  context = {'room_name': mark_safe(room_name), 'turn': turn}
+  p_list = request.POST.getlist('persona')
+
+  persona = {k:v for k,v in [p.split(':') for p in p_list]}
+  # ↑は↓と同義
+  # persona = dict()
+  # for p in p_list:
+  #   k, v = p.split(':')
+  #   persona[k] = v
+
+  context = {
+    'room_name': mark_safe(room_name),
+    'turn': turn,
+    'persona': persona,
+  }
   print(context)
   return render(request, 'chat/room.html', context)
