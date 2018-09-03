@@ -15,11 +15,11 @@ html, body {
 
 #persona-table {
   height: 280px;
-  background: red;
+  /*background: red;*/
 }
 
 #instruction {
-  background: yellow;
+  /*background: yellow;*/
   word-wrap: break-word;
   height: calc(100vh - 280px);
   overflow: auto;
@@ -27,7 +27,7 @@ html, body {
 
 #chat-space {
   box-sizing: border-box;
-  background: blue;
+  /*background: blue;*/
   margin-left: 30%;
   height: 100vh;
   min-width: 150px;
