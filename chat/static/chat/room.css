@@ -1,0 +1,50 @@
+html, body {
+  height: 100%;
+  /*min-width: 800px;*/
+  margin: 0;
+}
+
+
+#left-panel {
+  float: left;
+  box-sizing: border-box;
+  width: 30%;
+  min-width: 300px;
+  height: 100vh;
+}
+
+#persona-table {
+  height: 280px;
+  background: red;
+}
+
+#instruction {
+  background: yellow;
+  word-wrap: break-word;
+  height: calc(100vh - 280px);
+  overflow: auto;
+}
+
+#chat-space {
+  box-sizing: border-box;
+  background: blue;
+  margin-left: 30%;
+  height: 100vh;
+  min-width: 150px;
+}
+
+#chat-log {
+  box-sizing: border-box;
+  height: calc(100% - 40px);
+  width: 100%;
+  resize: none;
+}
+
+#chat-message-input {
+  width: calc(100% - 60px);
+  margin-left: 5px;
+}
+
+#chat-message-submit {
+  width: 40px;
+}

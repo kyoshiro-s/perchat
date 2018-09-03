@@ -3,10 +3,12 @@
 <head>
   <meta charset="utf-8">
   <title>チャットルーム</title>
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'chat/room.css' %}">
 </head>
 <body>
-  <div align="center">
-    <div style="float:left">
+  <div id="left-panel">
+    <div id="persona-table" align="center">
       あなたの設定は以下の通りです。<br>
       <table border="1" cellpadding="5">
         <tr><th>属性</th><th>値</th></tr>
@@ -14,15 +16,16 @@
           <tr><td>{{k}}</td><td>{{v}}</td></tr>
         {% endfor %}
       </table>
-
-      instructions:
-        brahbrahbrah
     </div>
-    <div style="float:right">
-      <textarea id="chat-log" cols="80" rows="40" readonly></textarea><br>
-      <input id="chat-message-input" type="text" size="72">
-      <input id="chat-message-submit" type="button" value="送信"><br>
+    <div id="instruction">
+      instruction:<br>
+      ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ<br>ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ<br>ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ<br>ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ<br>ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ<br>
     </div>
+  </div>
+  <div id="chat-space">
+    <textarea id="chat-log" readonly></textarea><br>
+    <input id="chat-message-input" type="text" size="90%">
+    <input id="chat-message-submit" type="button" value="送信"><br>
   </div>
 </body>
 <script>
@@ -45,6 +48,7 @@
     var message = data['message'];
     var sender_name = data['sender_name'];
     document.querySelector('#chat-log').value += (sender_name+': '+message+'\n');
+    document.querySelector('#chat-log').scrollTop = document.querySelector('#chat-log').scrollHeight;
     if (sender_name != 'あなた') {
       document.querySelector('#chat-message-input').disabled = false;
       document.querySelector('#chat-message-input').value = '';
