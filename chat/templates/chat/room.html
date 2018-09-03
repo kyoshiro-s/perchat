@@ -33,14 +33,14 @@
   var turn = "{{ turn }}";
   var chatSocket = new WebSocket(
     'ws://' + window.location.host +
-    '/ws/chat/' + room_name + '/');
+    '/ws/chat/' + room_name + '/' + turn + '/');
   document.querySelector('#chat-message-input').focus();
   if (turn === 'S') {
     document.querySelector('#chat-message-input').value = 'あいての発言を待っています…';
     document.querySelector('#chat-message-input').disabled = true;
     document.querySelector('#chat-message-submit').disabled = true;
   } else {
-    document.querySelector('#chat-log').value += '【システムメッセージ】 あなたから発言してください。\n';
+    document.querySelector('#chat-log').value += '【システムメッセージ】 あなたから発言してください。\r';
   }
 
   chatSocket.onmessage = function(e) {
