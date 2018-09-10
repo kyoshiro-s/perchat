@@ -6,3 +6,5 @@ db.sqlite3
 .python-version
 *.exe
 *.rdb
+*/migrations
+
