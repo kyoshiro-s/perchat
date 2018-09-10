@@ -30,7 +30,7 @@ html, body {
   /*background: blue;*/
   margin-left: 30%;
   height: 100vh;
-  min-width: 150px;
+  /*min-width: 150px;*/
 }
 
 #chat-log {
