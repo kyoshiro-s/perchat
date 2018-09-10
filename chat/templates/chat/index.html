@@ -26,7 +26,7 @@
     <form name="persona_form" method="POST">
       {% csrf_token %}
       {% for k,v in persona.items %}
-        <input type="hidden" name="persona" value="{{k}}:{{v}}">
+        <input type="hidden" name="persona" value="{{k}}={{v}}">
       {% endfor %}
     </form>
     この設定でよろしければ「決定」を、<br>
@@ -61,7 +61,7 @@
         document.persona_form.submit();
       };
 
-      document.querySelector('#announce-message').innerHTML = 'マッチング中です… [' + user_id + ']';
+      document.querySelector('#announce-message').innerHTML = 'マッチング中です…';
     };
 
     document.querySelector('#regenerate').onclick = function(e) {
