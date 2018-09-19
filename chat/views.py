@@ -3,7 +3,7 @@ from django.utils.safestring import mark_safe
 import json
 import random
 import string
-from .persona import generate_random
+from .persona import generate_random, get_attr_list
 from .models import Worker, ChatRoom
 from uuid import uuid4
 
@@ -37,7 +37,26 @@ def room(request, room_name, turn):
     worker_id=tmp_id,
     persona=persona_text,
     turn=turn,
-    room=ChatRoom.objects.get(room_name=room_name)
+    room=ChatRoom.objects.get(room_name=room_name),
   )
 
   return render(request, 'chat/room.html', context)
+
+def after_chat(request):
+  room_name = request.POST['room_name']
+  turn = request.POST['turn']
+  worker = Worker.objects.get(
+      room=ChatRoom.objects.get(room_name=room_name),
+      turn=turn,
+  )
+  persona_dict = {k:v for k,v in [p.split('=') for p in worker.persona.split('&')]}
+
+  context = {
+    'room_name': room_name,
+    'turn': turn,
+    'worker': worker,
+    'seed_persona': persona_dict,
+    'attributes': get_attr_list(),
+  }
+
+  return render(request, 'chat/after_chat.html', context)

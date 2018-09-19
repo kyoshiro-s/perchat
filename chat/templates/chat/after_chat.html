@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+{% load static %}
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <title>対話後アンケート</title>
+  <datalist id="attributes">
+    {% for a in attributes %}
+      <option value="{{a}}"></option>
+    {% endfor %}
+  </datalist>
+</head>
+<body>
+  <div style="float:left; margin-right:20px">
+  <h2>worker info</h2>
+  worker: {{worker}}<br>
+  room: {{room_name}}<br>
+  turn: {{turn}}<br><br>
+  <h2>seed persona</h2>
+  <table border="1" cellpadding="5">
+    <tr><th>属性</th><th>値</th></tr>
+    {% for k,v in seed_persona.items %}
+      <tr><td>{{k}}</td><td>{{v}}</td></tr>
+    {% endfor %}
+  </table>
+  </div>
+  <div>
+    <h2>chat log</h2>
+    {% for message in worker.room.chatmessage_set.all %}
+      {% if worker == message.sender %}
+        あなた:
+      {% else %}
+        あいて:
+      {% endif %}
+      {{message.text}}<br>
+    {% endfor %}
+
+    <form id="afterchat-form" action="/chat/end_of_session/">
+      <h2>persona estimation</h2>
+      <table>
+        <tr><th>属性</th><th>値</th></tr>
+      {% for i in "xxxxx" %}
+        <tr>
+          <td><input type="select" name="estimated-attr-input" list="attributes" autocomplete="off"></td>
+          <td><input type="text" name="estimated-val-input" autocomplete="off"></td>
+        </tr>
+      {% endfor %}
+      </table>
+
+      <h2>supplemental persona</h2>
+      <table id="sup-persona-table">
+        <tr><th>属性</th><th>値</th><th></th></tr>
+      </table>
+
+      <input type="submit" name="afterchat-submit" value="送信">
+    </form>
+  </div>
+</body>
+<script>
+  history.pushState(null, null, null);
+  window.addEventListener("popstate", function(e){
+    history.pushState(null, null, null);
+  });
+
+  function set_onkeypress (inputs) {
+    for ( let i=0; i < inputs.length-1; i++) {
+      inputs[i].onkeypress = function (e) {
+        if (e.keyCode === 13) {
+          e.preventDefault();
+          inputs[i+1].focus();
+        }
+      };
+    }
+  }
+
+  function add_input () {
+    document.querySelector('#sup-persona-table').innerHTML += `
+      <tr>
+        <td><input type="text" name="sup-attr" list="attributes" placeholder="入力または選択" autocomplete="off"></td>
+        <td><input type="text" name="sup-val"></td>
+        <td><input type="button" name="add-input" value="欄を追加" onclick=add_input() autocomplete="off"></td>
+      </tr>
+    `;
+    inputs = document.querySelectorAll('input[type="select"], input[type="text"]');
+    set_onkeypress(inputs);
+    inputs[inputs.length-2].focus();
+  }
+
+  window.addEventListener('beforeunload', function(e){e.returnValue="";}, false);
+  add_input();
+  inputs = document.querySelectorAll('input[type="select"], input[type="text"]');
+  inputs[0].focus();
+</script>
+</html>

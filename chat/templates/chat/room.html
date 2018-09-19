@@ -1,9 +1,11 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE HTML>
+{% load static %}
+<html lang="ja">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" content="no-cache">
   <title>チャットルーム</title>
-  {% load static %}
   <link rel="stylesheet" type="text/css" href="{% static 'chat/room.css' %}">
 </head>
 <body>
@@ -24,11 +26,21 @@
   </div>
   <div id="chat-space">
     <textarea id="chat-log" readonly></textarea><br>
-    <input id="chat-message-input" type="text" size="90%">
-    <input id="chat-message-submit" type="button" value="送信"><br>
+    <input id="chat-message-input" type="text">
+    <input id="chat-message-submit" type="button" value="送信">
+    <input id="chat-close-input" type="button" value="対話終了"><br>
   </div>
+  <form name="worker_info_form" method="POST" action="/chat/after_chat/">
+    {% csrf_token %}
+    <input type="hidden" name="room_name" value="{{room_name}}">
+    <input type="hidden" name="turn" value="{{turn}}">
+  </form>
 </body>
 <script>
+  var onBeforeunloadHandler = function (e) {
+    e.returnValue = 'このページを離れる、もしくは更新すると報酬が受け取れません。\nまた、対話相手も報酬を受け取れなくなります。';
+  };
+  window.addEventListener('beforeunload', onBeforeunloadHandler, false);
   var room_name = "{{ room_name }}";
   var turn = "{{ turn }}";
   var chatSocket = new WebSocket(
@@ -77,6 +89,11 @@
     messageInputDom.value = 'あいての返信を待っています…';
     messageInputDom.disabled = true;
     document.querySelector('#chat-message-submit').disabled = true;
+  };
+
+  document.querySelector('#chat-close-input').onclick = function (e) {
+    window.removeEventListener('beforeunload', onBeforeunloadHandler, false);
+    document.worker_info_form.submit();
   };
 </script>
 </html>

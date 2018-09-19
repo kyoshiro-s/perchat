@@ -15,11 +15,9 @@ html, body {
 
 #persona-table {
   height: 280px;
-  /*background: red;*/
 }
 
 #instruction {
-  /*background: yellow;*/
   word-wrap: break-word;
   height: calc(100vh - 280px);
   overflow: auto;
@@ -27,10 +25,8 @@ html, body {
 
 #chat-space {
   box-sizing: border-box;
-  /*background: blue;*/
   margin-left: 30%;
   height: 100vh;
-  /*min-width: 150px;*/
 }
 
 #chat-log {
@@ -41,10 +37,22 @@ html, body {
 }
 
 #chat-message-input {
-  width: calc(100% - 60px);
+  width: calc(100% - 180px);
   margin-left: 5px;
 }
 
 #chat-message-submit {
-  width: 40px;
+  background-color: deepskyblue;
+  color: white;
+  border: 0px;
+  border-radius: 5px;
+  width: 80px;
+}
+
+#chat-close-input {
+  color: white;
+  background-color: orangered;
+  border: 0px;
+  border-radius: 5px;
+  width: 70px;
 }
