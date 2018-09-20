@@ -17,7 +17,11 @@ class ChatRoomAdmin(admin.ModelAdmin):
   inlines = [WorkerInline, ChatMessageInline]
 
 class WorkerAdmin(admin.ModelAdmin):
-  fields = ['worker_id', 'persona', 'room']
+  fields = ['worker_id',
+            'room',
+            'seed_persona',
+            'sup_persona',
+            'estimated_partner_persona']
   inlines = [ChatMessageInline]
 
 admin.site.register(ChatRoom, ChatRoomAdmin)

@@ -38,7 +38,7 @@
 </body>
 <script>
   var onBeforeunloadHandler = function (e) {
-    e.returnValue = 'このページを離れる、もしくは更新すると報酬が受け取れません。\nまた、対話相手も報酬を受け取れなくなります。';
+    e.returnValue = "";
   };
   window.addEventListener('beforeunload', onBeforeunloadHandler, false);
   var room_name = "{{ room_name }}";
@@ -92,8 +92,12 @@
   };
 
   document.querySelector('#chat-close-input').onclick = function (e) {
-    window.removeEventListener('beforeunload', onBeforeunloadHandler, false);
-    document.worker_info_form.submit();
+    if (window.confirm('対話を終了し、次の作業に進みますか？')) {
+      window.removeEventListener('beforeunload', onBeforeunloadHandler, false);
+      document.worker_info_form.submit();
+    } else {
+      return false;
+    }
   };
 </script>
 </html>

@@ -37,7 +37,7 @@
       {{message.text}}<br>
     {% endfor %}
 
-    <form id="afterchat-form" action="/chat/end_of_session/">
+    <form id="afterchat-form" action="/chat/end_of_session/" method="POST">
       <h2>persona estimation</h2>
       <table>
         <tr><th>属性</th><th>値</th></tr>
@@ -55,15 +55,20 @@
       </table>
 
       <input type="submit" name="afterchat-submit" value="送信">
+      <input type="hidden" name="worker_id" value="{{worker.worker_id}}">
+      {% csrf_token %}
     </form>
   </div>
 </body>
 <script>
+  // ブラウザバック防止処理
   history.pushState(null, null, null);
   window.addEventListener("popstate", function(e){
     history.pushState(null, null, null);
   });
 
+  // 入力欄でエンターキーを押したとき
+  // 次の欄へ移動する
   function set_onkeypress (inputs) {
     for ( let i=0; i < inputs.length-1; i++) {
       inputs[i].onkeypress = function (e) {
@@ -75,11 +80,12 @@
     }
   }
 
+  // 入力欄を追加する処理
   function add_input () {
     document.querySelector('#sup-persona-table').innerHTML += `
       <tr>
-        <td><input type="text" name="sup-attr" list="attributes" placeholder="入力または選択" autocomplete="off"></td>
-        <td><input type="text" name="sup-val"></td>
+        <td><input type="text" name="sup-attr-input" list="attributes" placeholder="入力または選択" autocomplete="off"></td>
+        <td><input type="text" name="sup-val-input"></td>
         <td><input type="button" name="add-input" value="欄を追加" onclick=add_input() autocomplete="off"></td>
       </tr>
     `;
@@ -88,9 +94,25 @@
     inputs[inputs.length-2].focus();
   }
 
-  window.addEventListener('beforeunload', function(e){e.returnValue="";}, false);
-  add_input();
-  inputs = document.querySelectorAll('input[type="select"], input[type="text"]');
-  inputs[0].focus();
+  // 画面遷移防止処理
+  function onBeforeunloadHandler(e){e.returnValue="";}
+  window.addEventListener('beforeunload', onBeforeunloadHandler, false);
+
+  document.querySelector('#afterchat-form').onsubmit = function (e) {
+    if (window.confirm('内容を送信しますか？')) {
+      window.removeEventListener('beforeunload', onBeforeunloadHandler, false);
+      document.querySelector('#afterchat-submit').disable();
+      this.submit();
+    } else {
+      return false;
+    }
+  };
+
+  // 初期化
+  window.onload = function () {
+    add_input();
+    inputs = document.querySelectorAll('input[type="select"], input[type="text"]');
+    inputs[0].focus();
+  };
 </script>
 </html>

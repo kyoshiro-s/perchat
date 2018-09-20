@@ -3,7 +3,9 @@ from uuid import uuid4
 
 class Worker(models.Model):
   worker_id = models.CharField(max_length=30, unique=True)
-  persona = models.CharField(max_length=50)
+  seed_persona = models.CharField(max_length=100)
+  sup_persona = models.CharField(max_length=200, default='')
+  estimated_partner_persona = models.CharField(max_length=100, default='')
   room = models.ForeignKey('ChatRoom', to_field='room_name', on_delete=models.CASCADE)
   turn = models.CharField(max_length=1)
 
