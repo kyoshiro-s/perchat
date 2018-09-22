@@ -8,3 +8,4 @@ db.sqlite3
 *.rdb
 */migrations
 
+perchat_collection/local_settings.py

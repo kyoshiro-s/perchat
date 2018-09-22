@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'jevl07_lt5pq)yy_mku%$acp9i819l=g2833b-j$-_r)^m#e)8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -70,7 +70,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'perchat_collection.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -131,13 +130,6 @@ ALLOWED_HOSTS = ['*']
 
 STATIC_ROOT = 'staticfiles'
 
-DEBUG = False
-
-try:
-    from .local_settings import *
-except ImportError:
-    pass
-
 ASGI_APPLICATION = 'perchat_collection.routing.application'
 CHANNEL_LAYERS = {
     'default': {
@@ -145,3 +137,12 @@ CHANNEL_LAYERS = {
         'CONFIG': {'hosts': [('localhost', 6379)]},
     },
 }
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
+
+if not DEBUG:
+    import django_heroku
+    django_heroku.settings(locals())
