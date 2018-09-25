@@ -43,8 +43,9 @@
   window.addEventListener('beforeunload', onBeforeunloadHandler, false);
   var room_name = "{{ room_name }}";
   var turn = "{{ turn }}";
+  var ws_protocol = (window.location.protocol == 'http:') ? 'ws://' : 'wss://'
   var chatSocket = new WebSocket(
-    'ws://' + window.location.host +
+    ws_protocol + window.location.host +
     '/ws/chat/' + room_name + '/' + turn + '/');
   document.querySelector('#chat-message-input').focus();
   if (turn === 'S') {
