@@ -1,1 +1,1 @@
-web: gunicorn perchat_collection.wsgi
+web: daphne perchat_collection.asgi:application -v2
