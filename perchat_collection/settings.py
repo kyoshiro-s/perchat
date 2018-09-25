@@ -125,8 +125,8 @@ except ImportError:
     STATIC_URL = '/static/'
     STATICFILES_DIR = [os.path.join(BASE_DIR, 'static')]
 
-    import dj_database_url
-    DATABASES['default'] = dj_database_url.config()
+    # import dj_database_url
+    # DATABASES['default'] = dj_database_url.config()
 
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -141,6 +141,8 @@ except ImportError:
             'CONFIG': {'hosts': [('localhost', 6379)]},
         },
     }
+
+    DEBUG = True
     print('NOT USING LOCAL SETTINGS')
 
 
