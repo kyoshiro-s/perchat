@@ -16,6 +16,7 @@
         });
     });
   </script>
+  <script type="text/javascript" src="{% static 'chat/reconnecting-websocket.min.js' %}"></script>
 </head>
 <body>
   <div align="center">
@@ -44,8 +45,9 @@
       document.querySelector('#regenerate').disabled = true;
 
       user_id = uuid4()
-      var ws_protocol = (window.location.protocol == 'http:') ? 'ws://' : 'wss://'
-      var matchingSocket = new WebSocket(
+      var ws_protocol = (window.location.protocol == 'https:') ? 'wss://' : 'ws://'
+      console.log('now using ' + ws_protocol)
+      var matchingSocket = new ReconnectingWebSocket(
         ws_protocol + window.location.host + '/ws/matching/' + user_id + '/'
       );
 
