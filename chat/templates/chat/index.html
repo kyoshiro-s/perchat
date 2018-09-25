@@ -44,8 +44,9 @@
       document.querySelector('#regenerate').disabled = true;
 
       user_id = uuid4()
+      var ws_protocol = (window.location.protocol == 'http:') ? 'ws://' : 'wss://'
       var matchingSocket = new WebSocket(
-        'ws://' + window.location.host + '/ws/matching/' + user_id + '/'
+        ws_protocol + window.location.host + '/ws/matching/' + user_id + '/'
       );
 
       matchingSocket.onclose = function(e) {
