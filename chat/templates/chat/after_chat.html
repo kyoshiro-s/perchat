@@ -15,20 +15,18 @@
 </head>
 <body>
   <div style="float:left; margin-right:20px">
-  <h2>worker info</h2>
-  worker: {{worker}}<br>
-  room: {{room_name}}<br>
-  turn: {{turn}}<br><br>
-  <h2>seed persona</h2>
-  <table border="1" cellpadding="5">
-    <tr><th>属性</th><th>値</th></tr>
-    {% for k,v in seed_persona.items %}
-      <tr><td>{{k}}</td><td>{{v}}</td></tr>
-    {% endfor %}
-  </table>
-  </div>
-  <div>
-    <h2>chat log</h2>
+<!--     <h2>worker info</h2>
+    worker: {{worker}}<br>
+    room: {{room_name}}<br>
+    turn: {{turn}}<br><br> -->
+    <h2>あなたの人物設定</h2>
+    <table border="1" cellpadding="5">
+      <tr><th>項目</th><th>値</th></tr>
+      {% for k,v in seed_persona.items %}
+        <tr><td>{{k}}</td><td>{{v}}</td></tr>
+      {% endfor %}
+    </table>
+    <h2>チャットログ</h2>
     {% for message in worker.room.chatmessage_set.all %}
       {% if worker == message.sender %}
         あなた:
@@ -37,11 +35,17 @@
       {% endif %}
       {{message.text}}<br>
     {% endfor %}
+  </div>
 
+  <div style="float: right">
     <form id="afterchat-form" action="/chat/end_of_session/" method="POST">
-      <h2>persona estimation</h2>
+      <h2>相手の人物予想</h2>
+      <p>
+        チャット相手の人物設定を予想して、5つまで記入してください。<br>
+        項目の欄は選択肢が出ますが、選択肢以外のものでも構いません。
+      </p>
       <table>
-        <tr><th>属性</th><th>値</th></tr>
+        <tr><th>項目</th><th>値</th></tr>
       {% for i in "xxxxx" %}
         <tr>
           <td><input type="select" name="estimated-attr-input" list="attributes" autocomplete="off"></td>
@@ -50,9 +54,15 @@
       {% endfor %}
       </table>
 
-      <h2>supplemental persona</h2>
+      <h2>追加の人物設定</h2>
+      <p>
+        チャット中に使った、あなたの元々の人物設定にはない設定を記入してください。<br>
+        例えば、「年齢」という項目がないのに「18歳です」と発言した場合、項目に「年齢」、値に「18」を記入してください。<br>
+        項目の欄は選択肢が出ますが、選択肢以外のものでも構いません。<br>
+        <font size="-1">現在、欄を追加ボタンを押すと記入したものが消えてしまうので、先に十分な数の欄を作ってからご記入ください。</font>
+      </p>
       <table id="sup-persona-table">
-        <tr><th>属性</th><th>値</th><th></th></tr>
+        <tr><th>項目</th><th>値</th><th></th></tr>
       </table>
 
       <input type="submit" name="afterchat-submit" value="送信">

@@ -21,9 +21,17 @@
 </head>
 <body>
   <div align="center">
-    あなたの設定は以下の通りです。<br>
+    <h1>人物なりきりチャット(仮)</h1>
+    <p>与えられた人物設定になりきって、チャットをしてください。</p>
+  </div>
+  <hr>
+  <div style="margin-left: 20vw">
+    <h2>手順説明</h2>
+    <ol>
+    <li>あなたがなりきる人物設定を確認してください。<br>
+       この設定はランダムに生成されており、気に入らなければ再生成することができます。<br>
     <table border="1" cellpadding="5">
-      <tr><th>属性</th><th>値</th></tr>
+      <tr><th>項目</th><th>値</th></tr>
       {% for k,v in persona.items %}
       <tr><td>{{k}}</td><td>{{v}}</td></tr>
       {% endfor %}
@@ -34,11 +42,36 @@
         <input type="hidden" name="persona" value="{{k}}={{v}}">
       {% endfor %}
     </form>
-    この設定でよろしければ「決定」を、<br>
-    そうでない場合は「再生成」を押してください。<br>
-    <input type="button" id="regenerate" value="再生成">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="button" id="matching-start-input" value="決定"><br>
-    <div id="announce-message"></div>
+    この人物設定が気に入らない場合は「再生成」を押してください。<br>
+    <input type="button" id="regenerate" value="再生成">
+    </li>
+    <li>上の人物設定になりきって、チャットをしていただきます。<br>
+       チャットを通じて、自分がどんな人物かを相手に伝え、相手がどんな人物かを知ろうとしてください。<br>
+       与えられた人物設定にない設定も、自由に使ってください。<br>
+       例えば、あなたの人物設定に「年齢」という項目がなければ、相手に年齢を聞かれて何歳と答えても構いません。<br>
+       チャットの際の注意事項が下にありますので、よく読んでください。<br>
+    </li>
+    <li>お互いのことを十分知れたと思ったら、チャットを終了してください。</li>
+    <li>チャット終了後、チャット相手の人物設定を予想して記入していただきます。<br>
+       また、チャット中に新しく使った設定があれば、記入してください。<br>
+       全て記入し終わったら、送信ボタンを押してください。
+    </li>
+    </ol>
+    <h2>チャットの際の注意</h2>
+      <ol>
+      <li>チャット相手は、ロボットではなく人間です。<br>攻撃的・差別的な言葉、過度なスラングの使用などは控えてください。</li>
+      <li>「お互いに初対面」としての会話をしてください。</li>
+      <li>お互いにだいたい5項目分ずつ、自分のことを伝え、相手のことを知れたと思ったら、対話を終了してください。</li>
+      <li>あなた自身の本名、住所、電話番号等の個人情報を発言しないでください。</li>
+      <li>人物設定、チャット内容、相手の人物予想、追加した設定は記録され、今後の研究に用いられます。<br>ご了承の程よろしくお願い致します。</li>
+      <li>注意事項は以上です。チャットを楽しんでください。</li>
+      </ol>
+    <p>
+      以上のことをご理解いただけましたら、下のボタンからお進みください。
+    </p>
+      <div id="announce-message">
+        <input type="button" id="matching-start-input" value="次へ進む">
+      </div>
   </div>
   <script>
     document.querySelector('#matching-start-input').onclick = function(e) {
@@ -68,7 +101,7 @@
         document.persona_form.submit();
       };
 
-      document.querySelector('#announce-message').innerHTML = 'マッチング中です…';
+      document.querySelector('#announce-message').innerHTML += 'マッチング中です…';
     };
 
     document.querySelector('#regenerate').onclick = function(e) {
