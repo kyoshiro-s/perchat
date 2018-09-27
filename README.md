@@ -3,8 +3,8 @@ persona-chat collection webtool
 
 
 # requirements
-* python (<=3.6)
-* redis (<=2.6)
+* python (>=3.6)
+* redis (>=2.6)
 
 # setup
 ```sh
