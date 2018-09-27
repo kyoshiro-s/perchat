@@ -15,12 +15,8 @@ def index(request):
 
 def room(request, room_name, turn):
   p_list = request.POST.getlist('persona')
-  persona = {k:v for k,v in [p.split('=') for p in p_list]}
-  # ↑は↓と同義
-  # persona = dict()
-  # for p in p_list:
-  #   k, v = p.split(':')
-  #   persona[k] = v
+  persona = [(k,v) for k,v in [p.split('=') for p in p_list]]
+
   context = {
     'room_name': mark_safe(room_name),
     'turn': turn,
@@ -44,12 +40,12 @@ def after_chat(request):
       room=ChatRoom.objects.get(room_name=room_name),
       turn=turn,
   )
-  persona_dict = {k:v for k,v in [p.split('=') for p in worker.seed_persona.split('&')]}
+  persona_list = [(k,v) for k,v in [p.split('=') for p in worker.seed_persona.split('&')]]
   context = {
     'room_name': room_name,
     'turn': turn,
     'worker': worker,
-    'seed_persona': persona_dict,
+    'seed_persona': persona_list,
     'attributes': get_attr_list(),
   }
   return render(request, 'chat/after_chat.html', context)

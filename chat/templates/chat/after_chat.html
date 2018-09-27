@@ -22,7 +22,7 @@
     <h2>あなたの人物設定</h2>
     <table border="1" cellpadding="5">
       <tr><th>項目</th><th>値</th></tr>
-      {% for k,v in seed_persona.items %}
+      {% for k,v in seed_persona %}
         <tr><td>{{k}}</td><td>{{v}}</td></tr>
       {% endfor %}
     </table>
@@ -31,7 +31,7 @@
       {% if worker == message.sender %}
         あなた:
       {% else %}
-        あいて:
+        相 手:
       {% endif %}
       {{message.text}}<br>
     {% endfor %}
