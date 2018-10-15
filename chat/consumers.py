@@ -26,22 +26,30 @@ class AsyncChatConsumer(AsyncWebsocketConsumer):
 
   async def receive(self, text_data):
     text_data_json = json.loads(text_data)
-    message = text_data_json['message']
-    sender_id = self.channel_name
-    ChatMessage.objects.create(
-      room=ChatRoom.objects.get(room_name=self.room_name),
-      sender=Worker.objects.get(worker_id=sender_id),
-      text=message
-    )
+    if text_data_json['type'] == 'message':
+      message = text_data_json['message']
+      ChatMessage.objects.create(
+        room=ChatRoom.objects.get(room_name=self.room_name),
+        sender=Worker.objects.get(worker_id=self.channel_name),
+        text=message
+      )
 
-    await self.channel_layer.group_send(
-      self.room_group_name,
-      {
-        'type': 'chat_message',
-        'message': message,
-        'sender_id': sender_id,
-      }
-    )
+      await self.channel_layer.group_send(
+        self.room_group_name,
+        {
+          'type': 'chat_message',
+          'message': message,
+          'sender_id': self.channel_name,
+        }
+      )
+    elif text_data_json['type'] == 'player_disconnected':
+      await self.channel_layer.group_send(
+        self.room_group_name,
+        {
+          'type': 'player_disconnected',
+          'sender_id': self.channel_name,
+        }
+      )
 
   async def chat_message(self, event):
     message = event['message']
@@ -50,7 +58,15 @@ class AsyncChatConsumer(AsyncWebsocketConsumer):
     else:
       sender_name = '相 手'
 
-    await self.send(text_data=json.dumps({'message':message, 'sender_name':sender_name}))
+    await self.send(text_data=json.dumps({'type': 'message', 'message':message, 'sender_name':sender_name}))
+
+  async def player_disconnected(self, event):
+    if event['sender_id'] == self.channel_name:
+      sender_name = 'あなた'
+    else:
+      sender_name = '相手'
+
+    await self.send(text_data=json.dumps({'type': 'player_disconnected', 'sender_name': sender_name}))
 
 
 from collections import defaultdict

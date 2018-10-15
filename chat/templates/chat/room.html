@@ -23,15 +23,15 @@
     <div id="instruction">
       <h2>チャットの際の注意</h2>
         <ol>
-        <li>チャット相手は、ロボットではなく<font color="blue">人間</font>です。
+        <li>チャット相手は、ロボットではなく人間です。
             <font color="red">攻撃的・差別的な言葉、過度なスラングの使用</font>などは控えてください。</li>
-        <li>「<font color="blue">お互いに初対面</font>」としての会話をしてください。</li>
-        <li>お互いにだいたい5項目分、<font color="blue">相手のことを知れた</font>と思ったら、対話を終了してください。</li>
+        <li>「お互いに初対面」としての会話をしてください。あいさつや自己紹介から始めましょう。</li>
+        <li>お互いにだいたい5項目分、相手のことを知れたと思ったら、対話を終了してください。</li>
         <li><font color="blue">与えられた人物設定以外の項目は、自由に連想</font>して話してください。<br>
             例えば、あなたの人物設定に「年齢」という項目がなく、相手に年齢を聞かれた時は、何歳と答えても構いません。</li>
-        <li>与えられた設定の5項目を無理に伝える必要はありません。<font color="blue">自然な会話</font>を心がけてください。</li>
+        <li>与えられた設定の5項目全てを無理に伝える必要はありません。自然な会話を心がけてください。</li>
         <li>あなた自身の<font color="red">本名、住所、電話番号等の個人情報</font>を発言しないでください。</li>
-        <li>人物設定、チャット内容、相手の人物予想、追加した設定は<font color="blue">記録され、今後の研究に用いられます</font>。ご了承の程よろしくお願い致します。</li>
+        <li>人物設定、チャット内容、相手の人物予想、追加した設定は記録され、対話AIの研究に用いられます。ご了承の程よろしくお願い致します。</li>
         <li>注意事項は以上です。<font color="blue"><b>チャットを楽しんでください</b></font>。</li>
         </ol>
     </div>
@@ -64,21 +64,26 @@
     document.querySelector('#chat-message-input').value = 'あいての発言を待っています…';
     document.querySelector('#chat-message-input').disabled = true;
     document.querySelector('#chat-message-submit').disabled = true;
+    document.querySelector('#chat-log').value += '【システムメッセージ】 相手が先に発言します。\r';
   } else {
     document.querySelector('#chat-log').value += '【システムメッセージ】 あなたから発言してください。\r';
   }
 
   chatSocket.onmessage = function(e) {
     var data = JSON.parse(e.data);
-    var message = data['message'];
-    var sender_name = data['sender_name'];
-    document.querySelector('#chat-log').value += (sender_name+': '+message+'\n');
-    document.querySelector('#chat-log').scrollTop = document.querySelector('#chat-log').scrollHeight;
-    if (sender_name != 'あなた') {
-      document.querySelector('#chat-message-input').disabled = false;
-      document.querySelector('#chat-message-input').value = '';
-      document.querySelector('#chat-message-input').focus();
-      document.querySelector('#chat-message-submit').disabled = false;
+    if (data['type'] == 'message') {
+      var message = data['message'];
+      var sender_name = data['sender_name'];
+      document.querySelector('#chat-log').value += (sender_name+': '+message+'\n');
+      document.querySelector('#chat-log').scrollTop = document.querySelector('#chat-log').scrollHeight;
+      if (sender_name != 'あなた') {
+        document.querySelector('#chat-message-input').disabled = false;
+        document.querySelector('#chat-message-input').value = '';
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-submit').disabled = false;
+      }
+    } else if (data['type'] == 'player_disconnected' && data['sender_name'] != 'あなた') {
+      document.querySelector('#chat-log').value += '【システムメッセージ】 相手が退出しました。';
     }
   };
 
@@ -96,6 +101,7 @@
     var messageInputDom = document.querySelector('#chat-message-input');
     var message = messageInputDom.value;
     chatSocket.send(JSON.stringify({
+      'type': 'message',
       'message': message,
     }));
 
@@ -107,6 +113,9 @@
   document.querySelector('#chat-close-input').onclick = function (e) {
     if (window.confirm('対話を終了し、次の作業に進みますか？')) {
       window.removeEventListener('beforeunload', onBeforeunloadHandler, false);
+      chatSocket.send(JSON.stringify({
+        'type': 'player_disconnected',
+      }));
       document.worker_info_form.submit();
     } else {
       return false;
