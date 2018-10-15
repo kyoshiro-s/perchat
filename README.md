@@ -1,5 +1,6 @@
 # perchat
-persona-chat collection webtool
+persona-chat collection webtool<br>
+<img src="https://raw.githubusercontent.com/kyoshiro-s/perchat/images/logo.png" width="256px">
 
 
 # requirements
