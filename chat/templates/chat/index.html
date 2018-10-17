@@ -72,12 +72,17 @@
       以上のことをご理解いただけましたら、下のボタンからお進みください。<br>
       他の参加者とマッチングし次第、チャットルームに移動します。
     </p>
-      <div id="announce-message">
-        <input type="button" id="matching-start-input" value="チャットルームに入る">
-      </div>
+      <input type="button" id="matching-start-input" value="チャットルームに入る">
+      <span id="announce-message"></span><span id="countdown"></span>
   </div>
   <script>
-    document.querySelector('#matching-start-input').onclick = function(e) {
+    function sleep(msec) {
+      return new Promise(function(resolve){
+        setTimeout(function(){resolve()}, msec);
+      })
+    }
+
+    document.querySelector('#matching-start-input').onclick = async function(e) {
       this.disabled = true;
       document.querySelector('#regenerate').disabled = true;
 
@@ -89,7 +94,7 @@
       );
 
       matchingSocket.onclose = function(e) {
-        console.error('Matching socket closed unexpectedly');
+        console.log('Matching socket closed');
       };
 
       matchingSocket.onmessage = function (e) {
@@ -104,7 +109,19 @@
         document.persona_form.submit();
       };
 
-      document.querySelector('#announce-message').innerHTML += 'マッチング中です…';
+      document.querySelector('#announce-message').innerHTML += 'マッチング中です… ';
+
+      var max_wait = 20;
+      for (i=0; i<max_wait; i++) {
+        document.querySelector('#countdown').innerHTML = max_wait-i;
+        await sleep(1000);
+      }
+      matchingSocket.close();
+      this.disabled = false;
+      document.querySelector('#regenerate').disabled = false;
+      document.querySelector('#announce-message').innerHTML = '';
+      document.querySelector('#countdown').innerHTML = '';
+      alert('相手が見つかりませんでした。もう一度お試しください。');
     };
 
     document.querySelector('#regenerate').onclick = function(e) {

@@ -53,6 +53,7 @@
     e.returnValue = "";
   };
   window.addEventListener('beforeunload', onBeforeunloadHandler, false);
+  var num_messages = 0;
   var room_name = "{{ room_name }}";
   var turn = "{{ turn }}";
   var ws_protocol = (window.location.protocol == 'http:') ? 'ws://' : 'wss://'
@@ -75,6 +76,7 @@
       var message = data['message'];
       var sender_name = data['sender_name'];
       document.querySelector('#chat-log').value += (sender_name+': '+message+'\n');
+      num_messages += 1;
       document.querySelector('#chat-log').scrollTop = document.querySelector('#chat-log').scrollHeight;
       if (sender_name != 'あなた') {
         document.querySelector('#chat-message-input').disabled = false;
@@ -82,8 +84,17 @@
         document.querySelector('#chat-message-input').focus();
         document.querySelector('#chat-message-submit').disabled = false;
       }
+      if (num_messages >= 20) {
+        document.querySelector('#chat-log').value += '【システムメッセージ】 最大ターン数になりました。対話を終了して、次にお進みください。\n';
+        document.querySelector('#chat-message-input').value = '';
+        document.querySelector('#chat-message-input').disabled = true;
+        document.querySelector('#chat-message-submit').disabled = true;
+      }
     } else if (data['type'] == 'player_disconnected' && data['sender_name'] != 'あなた') {
-      document.querySelector('#chat-log').value += '【システムメッセージ】 相手が退出しました。';
+      document.querySelector('#chat-log').value += '【システムメッセージ】 相手が退出しました。対話を終了して、次にお進みください。\n';
+      document.querySelector('#chat-message-input').value = '';
+      document.querySelector('#chat-message-input').disabled = true;
+      document.querySelector('#chat-message-submit').disabled = true;
     }
   };
 
@@ -92,22 +103,24 @@
   };
 
   document.querySelector('#chat-message-input').onkeyup = function(e) {
-    if (e.keyCode === 13 && this.value != '') {
+    if (e.keyCode === 13) {
       document.querySelector('#chat-message-submit').click();
     }
   };
 
   document.querySelector('#chat-message-submit').onclick = function(e) {
-    var messageInputDom = document.querySelector('#chat-message-input');
-    var message = messageInputDom.value;
-    chatSocket.send(JSON.stringify({
-      'type': 'message',
-      'message': message,
-    }));
+    if (document.querySelector('#chat-message-input').value != '') {
+      var messageInputDom = document.querySelector('#chat-message-input');
+      var message = messageInputDom.value;
+      chatSocket.send(JSON.stringify({
+        'type': 'message',
+        'message': message,
+      }));
 
-    messageInputDom.value = 'あいての返信を待っています…';
-    messageInputDom.disabled = true;
-    document.querySelector('#chat-message-submit').disabled = true;
+      messageInputDom.value = 'あいての返信を待っています…';
+      messageInputDom.disabled = true;
+      document.querySelector('#chat-message-submit').disabled = true;
+    }
   };
 
   document.querySelector('#chat-close-input').onclick = function (e) {
@@ -120,6 +133,12 @@
     } else {
       return false;
     }
+  };
+
+  window.onunload = function (e) {
+    chatSocket.send(JSON.stringify({
+      'type': 'player_disconnected',
+    }));
   };
 </script>
 </html>

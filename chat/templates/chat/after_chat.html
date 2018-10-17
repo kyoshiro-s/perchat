@@ -123,7 +123,7 @@
 
   // 初期化
   window.onload = function () {
-    add_input();
+    for (i=0; i<5; i++) {add_input();}
     inputs = document.querySelectorAll('input[type="select"], input[type="text"]');
     inputs[0].focus();
   };
