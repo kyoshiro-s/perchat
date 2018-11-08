@@ -9,11 +9,14 @@ from uuid import uuid4
 
 # Create your views here.
 
-def index(request):
-  persona = generate_random()
-  return render(request, 'chat/index.html', {'persona': persona})
+def top(request):
+  return render(request, 'chat/top.html')
 
-def room(request, room_name, turn):
+def anteroom(request):
+  persona = generate_random()
+  return render(request, 'chat/anteroom.html', {'persona': persona})
+
+def chatroom(request, room_name, turn):
   p_list = request.POST.getlist('persona')
   persona = [(k,v) for k,v in [p.split('=') for p in p_list]]
 
@@ -31,7 +34,7 @@ def room(request, room_name, turn):
     turn=turn,
     room=ChatRoom.objects.get(room_name=room_name),
   )
-  return render(request, 'chat/room.html', context)
+  return render(request, 'chat/chatroom.html', context)
 
 def after_chat(request):
   room_name = request.POST['room_name']
@@ -70,7 +73,7 @@ def end_of_session(request):
   w.estimated_partner_persona = est_persona_text
   # print(w.sup_persona, w.estimated_partner_persona)
   w.save()
-  return redirect('thanks')
+  return redirect('thanks', verifycode=worker_id)
 
-def thanks(request):
-  return render(request, 'chat/thanks.html')
+def thanks(request, verifycode):
+  return render(request, 'chat/thanks.html', {'verifycode': verifycode})

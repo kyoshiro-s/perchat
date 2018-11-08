@@ -99,6 +99,7 @@
   };
 
   chatSocket.onclose = function(e) {
+    document.querySelector('#chat-log').value += '【システムメッセージ】 何らかの理由でチャットから切断されました。対話を終了して、次にお進みください。\n';
     console.error('Chat socket closed unexpectedly');
   };
 
@@ -126,19 +127,10 @@
   document.querySelector('#chat-close-input').onclick = function (e) {
     if (window.confirm('対話を終了し、次の作業に進みますか？')) {
       window.removeEventListener('beforeunload', onBeforeunloadHandler, false);
-      chatSocket.send(JSON.stringify({
-        'type': 'player_disconnected',
-      }));
       document.worker_info_form.submit();
     } else {
       return false;
     }
-  };
-
-  window.onunload = function (e) {
-    chatSocket.send(JSON.stringify({
-      'type': 'player_disconnected',
-    }));
   };
 </script>
 </html>

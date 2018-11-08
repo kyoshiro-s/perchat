@@ -22,6 +22,13 @@ class AsyncChatConsumer(AsyncWebsocketConsumer):
     await self.accept()
 
   async def disconnect(self, close_code):
+    await self.channel_layer.group_send(
+      self.room_group_name,
+      {
+        'type': 'player_disconnected',
+        'sender_id': self.channel_name,
+      }
+    )
     await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
   async def receive(self, text_data):
@@ -64,7 +71,7 @@ class AsyncChatConsumer(AsyncWebsocketConsumer):
     if event['sender_id'] == self.channel_name:
       sender_name = 'あなた'
     else:
-      sender_name = '相手'
+      sender_name = '相 手'
 
     await self.send(text_data=json.dumps({'type': 'player_disconnected', 'sender_name': sender_name}))
 
@@ -101,8 +108,6 @@ class AsyncMatchingConsumer(AsyncWebsocketConsumer):
       )
     else:
       num_room_members[self.matching_group_name] += 1
-    print(matching_queue, num_room_members)
-
 
   async def disconnect(self, close_code):
     await self.channel_layer.group_discard(self.matching_group_name, self.channel_name)
@@ -111,7 +116,6 @@ class AsyncMatchingConsumer(AsyncWebsocketConsumer):
       del num_room_members[self.matching_group_name]
     if self.room_name in matching_queue:
       matching_queue.remove(self.room_name)
-    print(matching_queue, num_room_members)
 
   async def receive(self, text_data):
     pass

@@ -8,7 +8,7 @@ html, body {
 #left-panel {
   float: left;
   box-sizing: border-box;
-  width: 30%;
+  width: 30vw;
   min-width: 300px;
   height: 100vh;
 }
@@ -25,14 +25,14 @@ html, body {
 
 #chat-space {
   box-sizing: border-box;
-  margin-left: 30%;
+  margin-left: 31vw;
   height: 100vh;
 }
 
 #chat-log {
   box-sizing: border-box;
   height: calc(100% - 40px);
-  width: 100%;
+  width: 99%;
   resize: none;
 }
 
