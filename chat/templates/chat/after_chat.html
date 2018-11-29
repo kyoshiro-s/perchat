@@ -38,7 +38,7 @@
   </div>
 
   <div style="float: right">
-    <form id="afterchat-form" action="/chat/end_of_session/" method="POST">
+    <form id="afterchat-form" action="{% url 'end_of_session' %}" method="POST">
       <h2>相手の人物予想</h2>
       <p>
         チャット相手の人物設定を予想して、5つまで記入してください。<br>

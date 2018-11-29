@@ -89,7 +89,7 @@
       var ws_protocol = (window.location.protocol == 'https:') ? 'wss://' : 'ws://'
       console.log('now using ' + ws_protocol)
       var matchingSocket = new ReconnectingWebSocket(
-        ws_protocol + window.location.host + '/ws/matching/' + user_id + '/'
+        ws_protocol + window.location.host + '/perchat/ws/matching/' + user_id + '/'
       );
 
       matchingSocket.onclose = function(e) {
@@ -104,7 +104,7 @@
         } else {
           var turn = 'S';
         }
-        document.persona_form.action = '/chat/' + room_name + '/' + turn + '/';
+        document.persona_form.action = '/perchat/' + room_name + '/' + turn + '/';
         document.persona_form.submit();
       };
 

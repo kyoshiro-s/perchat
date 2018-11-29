@@ -42,7 +42,7 @@
     <input id="chat-message-submit" type="button" value="送信">
     <input id="chat-close-input" type="button" value="対話終了"><br>
   </div>
-  <form name="worker_info_form" method="POST" action="/chat/after_chat/">
+  <form name="worker_info_form" method="POST" action="{% url 'after_chat' %}">
     {% csrf_token %}
     <input type="hidden" name="room_name" value="{{room_name}}">
     <input type="hidden" name="turn" value="{{turn}}">
@@ -59,7 +59,7 @@
   var ws_protocol = (window.location.protocol == 'http:') ? 'ws://' : 'wss://'
   var chatSocket = new WebSocket(
     ws_protocol + window.location.host +
-    '/ws/chat/' + room_name + '/' + turn + '/');
+    '/perchat/ws/chat/' + room_name + '/' + turn + '/');
   document.querySelector('#chat-message-input').focus();
   if (turn === 'S') {
     document.querySelector('#chat-message-input').value = 'あいての発言を待っています…';
