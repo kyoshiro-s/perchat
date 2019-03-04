@@ -14,7 +14,7 @@ cryptography==2.4.2
 daphne==2.2.0
 dj-database-url==0.5.0
 dj-static==0.0.6
-Django==2.1.3
+Django>=2.1.6
 django-heroku==0.3.1
 django-http2-push==0.0b2
 django-toolbelt==0.0.1
