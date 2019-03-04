@@ -8,6 +8,7 @@ class Worker(models.Model):
   estimated_partner_persona = models.CharField(max_length=100, default='')
   room = models.ForeignKey('ChatRoom', to_field='room_name', on_delete=models.CASCADE)
   turn = models.CharField(max_length=1)
+  mail = models.CharField(max_length=50, blank=True)
 
   def __str__(self):
     return '<{}>'.format(self.worker_id)

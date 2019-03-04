@@ -33,6 +33,7 @@ def chatroom(request, room_name, turn):
     seed_persona=persona_text,
     turn=turn,
     room=ChatRoom.objects.get(room_name=room_name),
+    mail=request.POST.get('mail'),
   )
   return render(request, 'chat/chatroom.html', context)
 

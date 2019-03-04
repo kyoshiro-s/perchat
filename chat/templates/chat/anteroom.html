@@ -21,10 +21,12 @@
 </head>
 <body>
   <div align="center">
-    <h1>人物なりきりチャット(仮)</h1>
+    <h1>人物なりきりチャット</h1>
   </div>
   <hr>
   <div style="margin-left: 10vw">
+    <form name="persona_form" method="POST">
+      {% csrf_token %}
     <h2>手順説明</h2>
     <ol>
     <li>あなたがなりきる人物設定を確認してください。<br>
@@ -35,12 +37,9 @@
       <tr><td>{{k}}</td><td>{{v}}</td></tr>
       {% endfor %}
     </table><br>
-    <form name="persona_form" method="POST">
-      {% csrf_token %}
       {% for k,v in persona %}
         <input type="hidden" name="persona" value="{{k}}={{v}}">
       {% endfor %}
-    </form>
     この人物設定に違和感がある/なりきるのが難しい/気に入らないなどの場合は「再生成」を押してください。<br>
     <input type="button" id="regenerate" value="再生成">
     </li><br>
@@ -55,24 +54,27 @@
     </li>
     </ol>
     <h2>チャットの際の注意</h2>
-      <ol>
-      <li>チャット相手は、ロボットではなく人間です。
-          <font color="red">攻撃的・差別的な言葉、過度なスラングの使用</font>などは控えてください。</li>
-      <li>「お互いに初対面」としての会話をしてください。あいさつや自己紹介から始めましょう。</li>
-      <li>お互いにだいたい5項目分、相手のことを知れたと思ったら、チャットを終了してください。</li>
-      <li><font color="blue">与えられた人物設定以外の項目は、自由に連想</font>して話してください。<br>
-          例えば、あなたの人物設定に「年齢」という項目がなく、相手に年齢を聞かれた時は、何歳と答えても構いません。</li>
-      <li>与えられた設定の5項目全てを無理に伝える必要はありません。自然な会話を心がけてください。</li>
-      <li>あなた自身の<font color="red">本名、住所、電話番号等の個人情報</font>を発言しないでください。</li>
-      <li>人物設定、チャット内容、相手の人物予想、追加した設定は記録され、対話AIの研究に用いられます。ご了承の程よろしくお願い致します。</li>
-      <li>注意事項は以上です。<font color="blue"><b>チャットを楽しんでください</b></font>。</li>
-      </ol>
-    <p>
-      以上のことをご理解いただけましたら、下のボタンからお進みください。<br>
-      他の参加者とマッチングし次第、チャットルームに移動します。
-    </p>
-      <input type="button" id="matching-start-input" value="チャットルームに入る">
-      <span id="announce-message"></span><span id="countdown"></span>
+    <ol>
+    <li>チャット相手は、ロボットではなく人間です。
+        <font color="red">攻撃的・差別的な言葉、過度なスラングの使用</font>などは控えてください。</li>
+    <li>「お互いに初対面」としての会話をしてください。あいさつや自己紹介から始めましょう。</li>
+    <li>お互いにだいたい5項目分、相手のことを知れたと思ったら、チャットを終了してください。</li>
+    <li><font color="blue">与えられた人物設定以外の項目は、自由に連想</font>して話してください。<br>
+        例えば、あなたの人物設定に「年齢」という項目がなく、相手に年齢を聞かれた時は、何歳と答えても構いません。</li>
+    <li>与えられた設定の5項目全てを無理に伝える必要はありません。自然な会話を心がけてください。</li>
+    <li>あなた自身の<font color="red">本名、住所、電話番号等の個人情報</font>を発言しないでください。</li>
+    <li>人物設定、チャット内容、相手の人物予想、追加した設定は記録され、対話AIの研究に用いられます。ご了承の程よろしくお願い致します。</li>
+    <li>注意事項は以上です。<font color="blue"><b>チャットを楽しんでください</b></font>。</li>
+    </ol><br>
+    確認コードの紛失などのトラブルに対応するため、任意でのメールアドレスの登録をお願いしております。<br>
+    メールアドレスはトラブル対応の目的のみに使用され、研究開発やその他の目的に使用することはありません。<br>
+      email: <input type="text" name="mail">
+    </form>
+    <br><br>
+    以上のことをご理解いただけましたら、下のボタンからお進みください。<br>
+    他の参加者とマッチングし次第、チャットルームに移動します。
+    <input type="button" id="matching-start-input" value="チャットルームに入る">
+    <span id="announce-message"></span><span id="countdown"></span>
   </div>
   <script>
     function sleep(msec) {
@@ -89,7 +91,7 @@
       var ws_protocol = (window.location.protocol == 'https:') ? 'wss://' : 'ws://'
       console.log('now using ' + ws_protocol)
       var matchingSocket = new ReconnectingWebSocket(
-        ws_protocol + window.location.host + '/ws/matching/' + user_id + '/'
+        ws_protocol + window.location.host + '/perchat/ws/matching/' + user_id + '/'
       );
 
       matchingSocket.onclose = function(e) {
@@ -104,13 +106,13 @@
         } else {
           var turn = 'S';
         }
-        document.persona_form.action = '/chat/' + room_name + '/' + turn + '/';
+        document.persona_form.action = '/perchat/' + room_name + '/' + turn + '/';
         document.persona_form.submit();
       };
 
       document.querySelector('#announce-message').innerHTML += 'マッチング中です… ';
 
-      var max_wait = 20;
+      var max_wait = 30;
       for (i=0; i<max_wait; i++) {
         document.querySelector('#countdown').innerHTML = max_wait-i;
         await sleep(1000);

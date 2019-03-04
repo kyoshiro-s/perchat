@@ -123,8 +123,8 @@ try:
     from .local_settings import *
     print('USING LOCAL SETTINGS')
 except ImportError:
-    STATIC_URL = '/static/'
-    STATICFILES_DIR = [os.path.join(BASE_DIR, 'static')]
+    STATIC_URL = '/perchat/static/'
+    # STATICFILES_DIR = [os.path.join(BASE_DIR, 'static')]
 
     # import dj_database_url
     # DATABASES['default'] = dj_database_url.config()
@@ -133,20 +133,15 @@ except ImportError:
 
     ALLOWED_HOSTS = ['*']
 
-    STATIC_ROOT = 'staticfiles'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
     ASGI_APPLICATION = 'perchat_collection.routing.application'
     CHANNEL_LAYERS = {
         'default': {
             'BACKEND': 'channels_redis.core.RedisChannelLayer',
-            'CONFIG': {'hosts': [('localhost', 6379)]},
+            'CONFIG': {'hosts': [('localhost', 6666)]},
         },
     }
 
-    DEBUG = True
+    DEBUG = False
     print('NOT USING LOCAL SETTINGS')
-
-
-if not DEBUG:
-    import django_heroku
-    django_heroku.settings(locals())
