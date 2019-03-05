@@ -21,7 +21,7 @@
 </head>
 <body>
   <div align="center">
-    <h1>人物なりきりチャット おみあいばーじょん</h1>
+    <h1>初対面対話収集</h1>
   </div>
   <hr>
   <div style="margin-left: 10vw">
@@ -29,19 +29,20 @@
       {% csrf_token %}
     <h2>手順説明</h2>
     <ol>
-    <li>あなたがなりきる人物設定を確認してください。<br>
-       この設定はランダムに生成されており、何度でも再生成することができます。<br>
-    <table border="1" cellpadding="5">
-      <tr><th>項目</th><th>値</th></tr>
-      {% for k,v in persona %}
-      <tr><td>{{k}}</td><td>{{v}}</td></tr>
-      {% endfor %}
-    </table><br>
-      {% for k,v in persona %}
-        <input type="hidden" name="persona" value="{{k}}={{v}}">
-      {% endfor %}
-    この人物設定に違和感がある/なりきるのが難しい/気に入らないなどの場合は「再生成」を押してください。<br>
-    <input type="button" id="regenerate" value="再生成">
+    <li>あなたの名前と年齢、性別を入力してください。<br>
+        <br>
+    <table border="0" cellpadding="5">
+      <tr align="center"><th>姓</th><th><input type="text" name="last_name"></th></tr>
+      <tr align="center"><th>名</th><th><input type="text" name="first_name"></th></tr>
+      <tr align="center"><th>年齢</th><th><input type="number" name="age"></th></tr>
+      <tr align="center">
+        <th>性別</th>
+        <th><label><input type="radio" name="gender" value="男性">男性</label>
+            <label><input type="radio" name="gender" value="女性">女性</label>
+        </th>
+      </tr>
+    </table>
+    <br>
     </li><br>
     <li>上の人物設定になりきって、チャットをしていただきます。<br>
        チャットを通じて、<font color="blue">お互いに相手がどんな人物か</font>を知ろうとしてください。<br>

@@ -11,3 +11,4 @@ db.sqlite3
 perchat_collection/local_settings.py
 .nfs*
 /nohup.out
+perchat_v1.db
