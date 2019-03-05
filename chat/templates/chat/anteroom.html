@@ -29,30 +29,37 @@
       {% csrf_token %}
     <h2>手順説明</h2>
     <ol>
-    <li>あなたの名前と年齢、性別を入力してください。<br>
-        <br>
-    <table border="0" cellpadding="5">
-      <tr align="center"><th>姓</th><th><input type="text" name="last_name"></th></tr>
-      <tr align="center"><th>名</th><th><input type="text" name="first_name"></th></tr>
-      <tr align="center"><th>年齢</th><th><input type="number" name="age"></th></tr>
-      <tr align="center">
-        <th>性別</th>
-        <th><label><input type="radio" name="gender" value="男性">男性</label>
-            <label><input type="radio" name="gender" value="女性">女性</label>
-        </th>
-      </tr>
-    </table>
-    <br>
+    <li>
+      ご参加いただきありがとうございます。<br>
+      この対話収集は、相手に「また話したい」と思われる対話とはどのようなものか、という検証のために行っています。<br>
+
+    </li><br>
+    <li>
+      はじめに、あなたの名前と年齢、性別を入力してください。<br>
+      全て架空のものでも構いませんし、あなた自身のものでも構いません。<br>
+      ここで入力された情報は、研究用途以外には使用されません。<br>
+      <table border="0" cellpadding="5">
+        <tr align="center"><th>姓</th><th><input type="text" name="last_name"></th></tr>
+        <tr align="center"><th>名</th><th><input type="text" name="first_name"></th></tr>
+        <tr align="center"><th>年齢</th><th><input type="number" name="age"></th></tr>
+        <tr align="center">
+          <th>性別</th>
+          <th><label><input type="radio" name="gender" value="男性">男性</label>
+              <label><input type="radio" name="gender" value="女性">女性</label>
+          </th>
+        </tr>
+      </table>
     </li><br>
     <li>上の人物設定になりきって、チャットをしていただきます。<br>
        チャットを通じて、<font color="blue">お互いに相手がどんな人物か</font>を知ろうとしてください。<br>
        <b>チャットの際の注意事項</b>が下にありますので、よく読んでください。<br>
-    </li>
-    <li>お互いにだいたい5項目分、相手のことを知れたと思ったら、チャットを終了してください。</li>
-    <li>チャット終了後、<font color="blue">チャット相手の人物設定を予想</font>して記入していただきます。<br>
-       また、<font color="blue">与えられた設定以外の設定</font>をチャットで使っていたら、記入してください。<br>
-       全て記入し終わったら、送信ボタンを押してください。
-    </li>
+    </li><br>
+    <li>お互いにだいたい5項目分、相手のことを知れたと思ったら、チャットを終了してください。</li><br>
+    <li>
+      チャット終了後、<font color="blue">チャット相手の人物設定を予想</font>して記入していただきます。<br>
+      また、<font color="blue">与えられた設定以外の設定</font>をチャットで使っていたら、記入してください。<br>
+      全て記入し終わったら、送信ボタンを押してください。
+    </li><br>
     </ol>
     <h2>チャットの際の注意</h2>
     <ol>
@@ -86,13 +93,22 @@
 
     document.querySelector('#matching-start-input').onclick = async function(e) {
       this.disabled = true;
-      document.querySelector('#regenerate').disabled = true;
 
-      user_id = uuid4()
+      var user_id = uuid4();
+      var gender = document.persona_form.gender.value;
+      if (gender === "") {
+        alert('性別を選択してください');
+        this.disabled = false;
+        return 0;
+      } else if (gender === "男性") {
+        gender = "M"
+      } else if (gender === "女性") {
+        gender = "F"
+      }
       var ws_protocol = (window.location.protocol == 'https:') ? 'wss://' : 'ws://'
       console.log('now using ' + ws_protocol)
       var matchingSocket = new ReconnectingWebSocket(
-        ws_protocol + window.location.host + '/perchat/ws/matching/' + user_id + '/'
+        ws_protocol + window.location.host + '/perchat/ws/matching/' + user_id + '/' + gender
       );
 
       matchingSocket.onclose = function(e) {
@@ -120,15 +136,10 @@
       }
       matchingSocket.close();
       this.disabled = false;
-      document.querySelector('#regenerate').disabled = false;
       document.querySelector('#announce-message').innerHTML = '';
       document.querySelector('#countdown').innerHTML = '';
       alert('相手が見つかりませんでした。もう一度お試しください。');
     };
-
-    document.querySelector('#regenerate').onclick = function(e) {
-      location.reload();
-    }
   </script>
 </body>
 </html>
