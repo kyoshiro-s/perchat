@@ -45,7 +45,7 @@ selenium==3.13.0
 service-identity==17.0.0
 six==1.11.0
 static3==0.7.0
-Twisted==18.9.0
+Twisted==19.7.0
 txaio==2.10.0
 whitenoise==3.3.1
 zope.interface==4.5.0
